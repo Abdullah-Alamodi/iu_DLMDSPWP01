@@ -44,10 +44,11 @@ class Visualization:
             show(p)
         else:
             plt.figure()
-            plt.plot(df[x_axis], df[y_axis])
+            plt.plot(df[x_axis], df[y_axis], label=y_axis)
             plt.title(title)
             plt.xlabel(x_label)
             plt.ylabel(y_label)
+            plt.legend()
             plt.show()
 
     def bar_chart(self, 
