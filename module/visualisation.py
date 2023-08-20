@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 from bokeh.plotting import figure, show
+from numpy import array, histogram
 
 
 class Visualization:
@@ -35,7 +36,11 @@ class Visualization:
         df = self.df
         if interactive:
             p = figure(title=title)
-            p.circle(x=df[x_axis], y=df[y_axis], size=10)
+            p.circle(x=df[x_axis], 
+                     y=df[y_axis], 
+                     size=10)
+            p.xaxis.axis_label=x_axis
+            p.yaxis.axis_label=y_axis
             show(p)
         else:
             plt.figure()
@@ -73,7 +78,9 @@ class Visualization:
         df = self.df
         if interactive:
             p = figure(title=title)
-            p.vbar(x=df[x_axis], top=df[y_axis])
+            p.vbar(x=df[x_axis], top=df[y_axis], line_color='white')
+            p.xaxis.axis_label=x_axis
+            p.yaxis.axis_label=y_axis
             show(p)
         else:
             sns.barplot(x=x_axis, y=y_axis, data=df)
@@ -107,18 +114,56 @@ class Visualization:
         interactive: bool
             Boolean flag to indicate whether to create an interactive graph.
         """
+        from scipy.stats import linregress
+
         df = self.df
+        slope, intercept, r_value, p_value, std_err = linregress(df[x_axis], df[y_axis])
+
         if interactive:
-            sns.scatterplot(x=x_axis, y=y_axis, data=df)
-            show()
+            p = figure(title=title)
+            p.circle(x=df[x_axis], y=df[y_axis])
+            p.xaxis.axis_label=x_axis
+            p.yaxis.axis_label=y_axis
+            x_range = array([min(df[x_axis]), max(df[x_axis])])
+            y_range = intercept + slope * x_range
+            p.line(x=x_range, y=y_range, line_width=2, color='red')
+            show(p)
         else:
             sns.scatterplot(x=x_axis, y=y_axis, data=df)
             plt.title(title)
             plt.xlabel(x_label)
             plt.ylabel(y_label)
+            x_range = array([min(df[x_axis]), max(df[x_axis])])
+            y_range = intercept + slope * x_range
+            plt.plot(x_range, y_range, color='red', linewidth=2)
             plt.show()
 
-    def histogram(self, x_axis, title, x_label, interactive=False):
+        # df = self.df
+        # if interactive:
+        #     p = figure(title=title)
+        #     p.circle(x=df[x_axis], y=df[y_axis])
+        #     p.xaxis.axis_label=x_axis
+        #     p.yaxis.axis_label=y_axis
+        #     p.yaxis.axis_label = y_axis
+        #     p.line(
+        #         x=[min(df[x_axis]), max(df[x_axis])],
+        #         y=[min(df[y_axis]), max(df[y_axis])],
+        #         line_width=2,
+        #         color="red")
+        #     show(p)
+        # else:
+        #     sns.scatterplot(x=x_axis, y=y_axis, data=df)
+        #     plt.title(title)
+        #     plt.xlabel(x_label)
+        #     plt.ylabel(y_label)
+        #     plt.plot([min(df[x_axis]), max(df[x_axis])], [min(df[y_axis]), max(df[y_axis])], color='red', linewidth=2)
+        #     plt.show()
+
+    def histogram(self, 
+                  x_axis, 
+                  title, 
+                  x_label=None, 
+                  interactive=False):
         """
         Creates a histogram of the given data.
 
@@ -135,127 +180,13 @@ class Visualization:
         """
         df = self.df
         if interactive:
-            sns.histplot(df[x_axis])
-            show()
+            p = figure(title=title, x_axis_label=x_axis)
+            hist, edges = histogram(df[x_axis], density=True, bins=50)
+            p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:], fill_color="navy", line_color="white", alpha=0.5)
+            show(p)
         else:
             sns.histplot(df[x_axis])
             plt.title(title)
             plt.xlabel(x_label)
             plt.ylabel("Number of passengers")
             plt.show()
-
-from sql import SQL
-sql = SQL(db_name="iudatabase")
-df = sql.read_table(table_name="train")
-vis = Visualization(df=df)
-print(vis.bar_chart("x", "y1", "Test", interactive=True))
-
-#====================================
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# from bokeh.plotting import figure, show
-
-# class Graph:
-#     def __init__(self, file_path):
-#         """
-#         Initializes the Graph object and reads the data from the given file path.
-        
-#         :param file_path: The path to the file containing the data.
-#         :type file_path: str
-#         """
-#         self.data = pd.read_csv(file_path)
-
-#     def line_plot(self, x, y, title=None, interactive=False):
-#         """
-#         Creates a line plot using the given x and y data.
-        
-#         :param x: The x data for the plot.
-#         :type x: list
-#         :param y: The y data for the plot.
-#         :type y: list
-#         :param title: The title of the plot, defaults to None
-#         :type title: str, optional
-#         :param interactive: Whether to create an interactive plot, defaults to False
-#         :type interactive: bool, optional
-#         """
-#         if interactive:
-#             p = figure(title=title)
-#             p.line(x, y)
-#             show(p)
-#         else:
-#             plt.plot(x, y)
-#             if title:
-#                 plt.title(title)
-#             plt.show()
-
-#     def bar_chart(self, x, y, title=None, interactive=False):
-#         """
-#         Creates a bar chart using the given x and y data.
-        
-#         :param x: The x data for the chart.
-#         :type x: list
-#         :param y: The y data for the chart.
-#         :type y: list
-#         :param title: The title of the chart, defaults to None
-#         :type title: str, optional
-#         :param interactive: Whether to create an interactive chart, defaults to False
-#         :type interactive: bool, optional
-#         """
-#         if interactive:
-#             p = figure(title=title)
-#             p.vbar(x=x, top=y)
-#             show(p)
-#         else:
-#             plt.bar(x, y)
-#             if title:
-#                 plt.title(title)
-#             plt.show()
-
-#     def scatter_plot(self, x, y, title=None, interactive=False):
-#         """
-#         Creates a scatter plot using the given x and y data.
-        
-#         :param x: The x data for the plot.
-#         :type x: list
-#         :param y: The y data for the plot.
-#         :type y: list
-#         :param title: The title of the plot, defaults to None
-#         :type title: str, optional
-#         :param interactive: Whether to create an interactive plot, defaults to False
-#         :type interactive: bool, optional
-#         """
-#         if interactive:
-#             p = figure(title=title)
-#             p.circle(x=x, y=y)
-#             show(p)
-#         else:
-#             plt.scatter(x, y)
-#             if title:
-#                 plt.title(title)
-#             plt.show()
-
-#     def histogram(self, data, bins=None, title=None, interactive=False):
-#         """
-#         Creates a histogram using the given data.
-        
-#         :param data: The data for the histogram.
-#         :type data: list
-#         :param bins: The number of bins for the histogram, defaults to None
-#         :type bins: int, optional
-#         :param title: The title of the histogram, defaults to None
-#         :type title: str, optional
-#          :param interactive: Whether to create an interactive histogram, defaults to False
-#          :type interactive: bool, optional
-#          """
-#         if bins:
-#              if interactive:
-#                  p = figure(title=title)
-#                  hist_data = np.histogram(data,bins=bins)[0]
-#                  p.quad(top=hist_data,bottom=0,left=bins[:-1],right=bins[1:])
-#                  show(p)
-#              else:
-#                  plt.hist(data,bins=bins)
-#                  if title:
-#                      plt.title(title)
-#                  plt.show()

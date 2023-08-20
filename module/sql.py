@@ -69,7 +69,6 @@ class SQL:
         
         else:
             if isinstance(csv_name, DataFrame):
-                table_name = csv_name.split(".")[0]
                 df.to_sql(table_name, self.engine, if_exists=if_exists)
             
             else:
@@ -77,7 +76,7 @@ class SQL:
                 table_name = csv_name.split(".")[0]
                 df.to_sql(table_name, self.engine, if_exists=if_exists)
 
-    def read_table(self, table_name:str, head=5):
+    def read_table(self, table_name:str):
         """
         Reads a SQLite table and returns a Pandas DataFrame.
 
@@ -90,7 +89,4 @@ class SQL:
         Returns: DataFrame
         """
         df = read_sql_table(table_name, self.engine)
-        return df.head(head)
-    
-if __name__ == "__main__":
-    sql = SQL(db_name="iudatabase")
+        return df
