@@ -82,4 +82,3 @@ class IdealFunctionFitter:
         plt.legend()
         plt.show()
 
-import pandas as np
