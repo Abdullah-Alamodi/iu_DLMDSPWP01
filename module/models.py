@@ -11,9 +11,11 @@ class IdealFunctionSelector:
         """
         Initializes the IdealFunctionSelector with the provided train, ideal and test data.
         
-        :param train_data: The train data as a DataFrame, csv file or numpy array.
-        :param ideal_data: The ideal data as a DataFrame, csv file or numpy array.
-        :param test_data: The test data as a DataFrame, csv file or numpy array.
+        Parameters
+        ----------
+        rain_data: The train data as a DataFrame, csv file or numpy array.
+        ideal_data: The ideal data as a DataFrame, csv file or numpy array.
+        test_data: The test data as a DataFrame, csv file or numpy array.
         """
         if isinstance(train_data, pd.DataFrame):
             self.train_data = train_data
@@ -40,8 +42,8 @@ class IdealFunctionSelector:
     def select_ideal_functions(self):
         """
         Selects the best ideal functions from the provided ideal functions.
-        
-        :return: A list of the indices of the selected ideal functions.
+        -------------------------------------------------------------------
+        return: A list of the indices of the selected ideal functions.
         """
         # Calculate the mean squared error for each ideal function
         mse = []
@@ -63,8 +65,11 @@ class IdealFunctionSelector:
         """
         Maps the test data to the selected ideal functions and calculates the deviation.
         
-        :param selected_functions: A list of the indices of the selected ideal functions.
-        :return: A DataFrame containing the mapped test data and deviation.
+        Parameters
+        ----------
+        selected_functions: A list of the indices of the selected ideal functions.
+        --------------------------------------------------------------------------
+        return: A DataFrame containing the mapped test data and deviation.
         """
         # Map the test data to the selected ideal functions
         mapped_test_data = self.test_data.copy()
@@ -80,8 +85,10 @@ class IdealFunctionSelector:
         """
         Visualizes the train, test and ideal data.
         
-        :param selected_functions: A list of the indices of the selected ideal functions.
-        :param mapped_test_data: A DataFrame containing the mapped test data and deviation.
+        Parameters
+        ----------
+        selected_functions: A list of the indices of the selected ideal functions.
+        mapped_test_data: A DataFrame containing the mapped test data and deviation.
         """
         # Plot the train data
         plt.figure(figsize=(12, 8))

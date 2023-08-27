@@ -35,7 +35,7 @@ class SQL:
         header: int value only -- 0 is default
             for more information, refer to read_csv documentation in Pandas
         -------------------------------------------------------------------
-        Returns: DataFrame
+        return: DataFrame
        """
        try:
         df = read_csv(self.db_path+csv_name, sep=sep, header=header)
@@ -86,7 +86,7 @@ class SQL:
             table name in SQL database
         
         -------------------------------
-        Returns: DataFrame
+        return: DataFrame
         """
         df = read_sql_table(table_name, self.engine)
         return df

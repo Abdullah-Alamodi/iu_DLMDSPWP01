@@ -139,27 +139,6 @@ class Visualization:
             plt.plot(x_range, y_range, color='red', linewidth=2)
             plt.show()
 
-        # df = self.df
-        # if interactive:
-        #     p = figure(title=title)
-        #     p.circle(x=df[x_axis], y=df[y_axis])
-        #     p.xaxis.axis_label=x_axis
-        #     p.yaxis.axis_label=y_axis
-        #     p.yaxis.axis_label = y_axis
-        #     p.line(
-        #         x=[min(df[x_axis]), max(df[x_axis])],
-        #         y=[min(df[y_axis]), max(df[y_axis])],
-        #         line_width=2,
-        #         color="red")
-        #     show(p)
-        # else:
-        #     sns.scatterplot(x=x_axis, y=y_axis, data=df)
-        #     plt.title(title)
-        #     plt.xlabel(x_label)
-        #     plt.ylabel(y_label)
-        #     plt.plot([min(df[x_axis]), max(df[x_axis])], [min(df[y_axis]), max(df[y_axis])], color='red', linewidth=2)
-        #     plt.show()
-
     def histogram(self, 
                   x_axis, 
                   title, 
