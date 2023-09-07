@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
-class IdealFunctionSelector:
+class IdealFunctionSelector(LinearRegression):
     """
     A class to select the best ideal functions from a set of provided ideal functions.
     """
@@ -10,6 +11,7 @@ class IdealFunctionSelector:
         """
         Initializes the IdealFunctionSelector with the provided train, ideal and test data.
         """
+        super().__init__()
         self.train_data = None
         self.ideal_data = None
         self.test_data = None
@@ -58,10 +60,11 @@ class IdealFunctionSelector:
             
             for j in range(1, 5):
                 y_true = self.train_data[f'y{j}']
+
+                self.fit(y_true.values.reshape(-1, 1), y_pred)
                 
                 # Calculate least squares
-                A = np.vstack([y_true, np.ones(len(y_true))]).T
-                m, c = np.linalg.lstsq(A, y_pred, rcond=None)[0]
+                m, c = self.coef_[0], self.intercept_
                 lsq_i += m
                 
             lsq.append(lsq_i)
@@ -86,7 +89,7 @@ class IdealFunctionSelector:
             y_pred = self.ideal_data[f'y{i}']
             deviation = np.abs(mapped_test_data['y'] - y_pred)
             mapped_test_data[f'deviation_{i}'] = deviation
-               
+
         return mapped_test_data
     
     def visualize(self, selected_functions, mapped_test_data):
