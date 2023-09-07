@@ -1,22 +1,33 @@
 import pandas as pd
 import numpy as np
-from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 class IdealFunctionSelector:
     """
     A class to select the best ideal functions from a set of provided ideal functions.
     """
-    def __init__(self, train_data, ideal_data, test_data):
+    def __init__(self):
         """
         Initializes the IdealFunctionSelector with the provided train, ideal and test data.
+        """
+        self.train_data = None
+        self.ideal_data = None
+        self.test_data = None
         
+    def select_ideal_functions(self, train_data, ideal_data, test_data):
+        """
+        Selects the best ideal functions from the provided ideal functions.
+        -------------------------------------------------------------------   
         Parameters
         ----------
-        rain_data: The train data as a DataFrame, csv file or numpy array.
+        train_data: The train data as a DataFrame, csv file or numpy array.
         ideal_data: The ideal data as a DataFrame, csv file or numpy array.
         test_data: The test data as a DataFrame, csv file or numpy array.
+        ------------------------------------------------------------------
+        return: A list of the indices of the selected ideal functions.
         """
+        
+        # Load data
         if isinstance(train_data, pd.DataFrame):
             self.train_data = train_data
         elif isinstance(train_data, str):
@@ -37,30 +48,28 @@ class IdealFunctionSelector:
             self.test_data = pd.read_csv(test_data)
         elif isinstance(test_data, np.ndarray):
             self.test_data = pd.DataFrame(test_data)
-
         
-    def select_ideal_functions(self):
-        """
-        Selects the best ideal functions from the provided ideal functions.
-        -------------------------------------------------------------------
-        return: A list of the indices of the selected ideal functions.
-        """
-        # Calculate the mean squared error for each ideal function
-        mse = []
+        # Calculate the least squares for each ideal function
+        lsq = []
+        
         for i in range(1, 51):
             y_pred = self.ideal_data[f'y{i}']
-            mse_i = 0
+            lsq_i = 0
+            
             for j in range(1, 5):
                 y_true = self.train_data[f'y{j}']
-                mse_i += mean_squared_error(y_true, y_pred)
-            mse.append(mse_i)
+                
+                # Calculate least squares
+                A = np.vstack([y_true, np.ones(len(y_true))]).T
+                m, c = np.linalg.lstsq(A, y_pred, rcond=None)[0]
+                lsq_i += m
+                
+            lsq.append(lsq_i)
             
-        # Select the four ideal functions with the lowest mean squared error
-        selected_functions = np.argsort(mse)[:4]
-
-        print(selected_functions)
+        # Select the four ideal functions with the lowest least squares
+        selected_functions = np.argsort(lsq)[:4]
         return selected_functions
-    
+        
     def map_test_data(self, selected_functions):
         """
         Maps the test data to the selected ideal functions and calculates the deviation.
