@@ -86,8 +86,7 @@ class IdealFunctionSelector:
             y_pred = self.ideal_data[f'y{i}']
             deviation = np.abs(mapped_test_data['y'] - y_pred)
             mapped_test_data[f'deviation_{i}'] = deviation
-
-        print(mapped_test_data)    
+               
         return mapped_test_data
     
     def visualize(self, selected_functions, mapped_test_data):
