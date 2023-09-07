@@ -115,7 +115,10 @@ class IdealFunctionSelector:
             
         # Plot the deviation
         for i in selected_functions:
-            plt.fill_between(mapped_test_data['x'], mapped_test_data[f'y'] - mapped_test_data[f'deviation_{i}'], mapped_test_data[f'y'] + mapped_test_data[f'deviation_{i}'], alpha=0.2)
+            plt.fill_between(mapped_test_data['x'], 
+                            mapped_test_data[f'y'] - mapped_test_data[f'deviation_{i}'],
+                            mapped_test_data[f'y'] + mapped_test_data[f'deviation_{i}'],
+                            alpha=0.2)
             
         plt.legend()
 
